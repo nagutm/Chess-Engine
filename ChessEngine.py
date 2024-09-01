@@ -16,6 +16,8 @@ class GameState():
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"],
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"],
         ]
+        self.moveFunctions = {'p': self.getPawnMoves, 'R': self.getRookMoves, 'N': self.getKnightMoves,
+                              'B': self.getBishopMoves, 'Q': self.getQueenMoves, 'K': self.getKingMoves}
         self.whiteToMove = True
         self.moveLog = []
     
@@ -35,36 +37,106 @@ class GameState():
     """
     All moves considering checks
     """
+
     def getAllValidMoves(self):
         return self.getAllPossibleMoves()
     
     """
     All moves without considering checks
     """
+
     def getAllPossibleMoves(self):
         moves = []
         for r in range(len(self.board)):
             for c in range(len(self.board[r])):
                 turn = self.board[r][c][0]
-                if (turn == 'w' and self.whiteToMove) and (turn == 'b' and not self.whiteToMove):
+                if (turn == 'w' and self.whiteToMove) or (turn == 'b' and not self.whiteToMove):
                     piece = self.board[r][c][1]
-                    if piece == 'p':
-                        self.getPawnMoves(r, c, moves)
-                    elif piece == 'R':
-                        self.getRookMoves(r, c, moves)
+                    self.moveFunctions[piece](r, c, moves)           
         return moves
     
     """
     All pawn moves for pawn located at row, col and add to list of moves
     """
+
     def getPawnMoves(self, r, c, moves):
-        pass
+        if self.whiteToMove:
+            if self.board[r-1][c] == "--": # 1 move forward
+                moves.append(Move((r,c), (r-1,c), self.board))
+                if r == 6 and self.board[r-2][c] == "--": # 2 moves forward
+                    moves.append(Move((r,c), (r-2,c), self.board))
+            if c-1 >=0: # Left capture
+                if self.board[r-1][c-1][0] == "b": 
+                    moves.append(Move((r,c), (r-1,c-1), self.board))
+            if c+1 <=7: # Right capture
+                if self.board[r-1][c+1][0] == "b": 
+                    moves.append(Move((r,c), (r-1,c+1), self.board))
+        else:
+            if self.board[r+1][c] == "--":
+                moves.append(Move((r,c), (r+1,c), self.board))
+                if r == 1 and self.board[r+2][c] == "--":
+                    moves.append(Move((r,c), (r+2,c), self.board))
+            if c-1 >=0: # Left capture
+                if self.board[r+1][c-1][0] == "w": 
+                    moves.append(Move((r,c), (r+1,c-1), self.board))
+            if c+1 <=7: # Right capture
+                if self.board[r+1][c+1][0] == "w": 
+                    moves.append(Move((r,c), (r+1,c+1), self.board))
+           
+        #print(f"Black Pawn Moves: {[(move.getChessNotation(), move.pieceMoved) for move in moves if move.pieceMoved == 'bp']}")
+    """
+    All Knight moves for Knight located at row, col and add to list of moves
+    """
+
+    def getKnightMoves(self, r, c, moves):
+        if self.whiteToMove:
+            ...
+        else:
+            ...
+
+    """
+    All Bishop moves for Bishop located at row, col and add to list of moves
+    """
+
+    def getBishopMoves(self, r, c, moves):
+        if self.whiteToMove:
+            ...
+        else:
+            ...
+
+    """
+    All Queen moves for Queen located at row, col and add to list of moves
+    """
+
+    def getQueenMoves(self, r, c, moves):
+        if self.whiteToMove:
+            ...
+        else:
+            ...
+
+    """
+    All King moves for King located at row, col and add to list of moves
+    """
+
+    def getKingMoves(self, r, c, moves):
+        if self.whiteToMove:
+            ...
+        else:
+            ...
 
     """
     All Rook moves for Rook located at row, col and add to list of moves
     """
+
     def getRookMoves(self, r, c, moves):
-        pass
+        if self.whiteToMove:
+            temp_r = r
+            while temp_r > 0:
+                if self.board[r-1][c] == "--":
+                    moves.append(Move((r,c), (r-1,c), self.board))
+
+        else:
+            ...
 
 
 class Move():
