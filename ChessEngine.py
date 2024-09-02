@@ -89,54 +89,86 @@ class GameState():
     """
 
     def getKnightMoves(self, r, c, moves):
-        if self.whiteToMove:
-            ...
-        else:
-            ...
+        directions = ((-2,-1), (-2,1), (-1,-2), (-1,2), (1,-2), (1,2), (2,-1), (2,1)) 
+        friendly = "w" if self.whiteToMove else "b"
+        for d in directions:
+            endRow = r + d[0]  
+            endCol = c + d[1] 
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != friendly:
+                    moves.append(Move((r,c), (endRow,endCol), self.board))
 
     """
     All Bishop moves for Bishop located at row, col and add to list of moves
     """
 
     def getBishopMoves(self, r, c, moves):
-        if self.whiteToMove:
-            ...
-        else:
-            ...
+        directions = ((-1,1), (1,1), (1,-1), (-1,-1)) #upRight, downRight, downLeft, upLeft
+        enemy = "b" if self.whiteToMove else "w"
+        for d in directions:
+            for i in range(1,8):
+                endRow = r + d[0] * i   
+                endCol = c + d[1] * i
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":
+                        moves.append(Move((r,c), (endRow,endCol), self.board))
+                    elif endPiece[0] == enemy:
+                        moves.append(Move((r,c), (endRow,endCol), self.board))
+                        break
+                    else:
+                        break
+                else:
+                    break
 
     """
     All Queen moves for Queen located at row, col and add to list of moves
     """
 
     def getQueenMoves(self, r, c, moves):
-        if self.whiteToMove:
-            ...
-        else:
-            ...
+        self.getRookMoves(r, c, moves)
+        self.getBishopMoves(r, c, moves)
 
     """
     All King moves for King located at row, col and add to list of moves
     """
 
     def getKingMoves(self, r, c, moves):
-        if self.whiteToMove:
-            ...
-        else:
-            ...
+        directions = ((-1,1), (1,1), (1,-1), (-1,-1), (-1,0), (0,-1), (1,0), (0,1)) 
+        friendly = "w" if self.whiteToMove else "b"
+        for i in range(8):
+            endRow = r + directions[i][0]
+            endCol = c + directions[i][1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != friendly:
+                    moves.append(Move((r,c), (endRow,endCol), self.board))
+
+
 
     """
     All Rook moves for Rook located at row, col and add to list of moves
     """
 
     def getRookMoves(self, r, c, moves):
-        if self.whiteToMove:
-            temp_r = r
-            while temp_r > 0:
-                if self.board[r-1][c] == "--":
-                    moves.append(Move((r,c), (r-1,c), self.board))
-
-        else:
-            ...
+        directions = ((-1,0), (0,-1), (1,0), (0,1))
+        enemy = "b" if self.whiteToMove else "w"
+        for d in directions:
+            for i in range(1,8):
+                endRow = r + d[0] * i   
+                endCol = c + d[1] * i
+                if 0 <= endRow < 8 and 0 <= endCol < 8:
+                    endPiece = self.board[endRow][endCol]
+                    if endPiece == "--":
+                        moves.append(Move((r,c), (endRow,endCol), self.board))
+                    elif endPiece[0] == enemy:
+                        moves.append(Move((r,c), (endRow,endCol), self.board))
+                        break
+                    else:
+                        break
+                else:
+                    break
 
 
 class Move():
